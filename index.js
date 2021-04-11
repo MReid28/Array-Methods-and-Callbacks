@@ -39,9 +39,10 @@ hint - you should be looking at the stage key inside of the objects
 function getFinals(data) {
    return data.filter(item =>{
        return item.Stage === "Final";
-   }
-    )
+   })
 }
+    
+
 
 
 
@@ -70,9 +71,9 @@ Use the higher-order function getWinners to do the following:
 
 function getWinners(arr, getFinalsCB) {
     const winners = getFinalsCB(arr).map(item =>{
-        if(item["Home Team Goals"] < item["Away Team Goals"]){
+        if(item["Home Team Goals"] > item["Away Team Goals"]){
             return item["Home Team Name"]
-        }else if (item["Home Team Goals"] < item["Away Team Goals"]){
+        } else if (item["Home Team Goals"] < item["Away Team Goals"]){
             return item["Away Team Name"]
         }
            
@@ -91,15 +92,22 @@ Use the higher-order function getWinnersByYear to do the following:
 
 hint: the strings returned need to exactly match the string in step 4.
  */
-function getWinnersByYear(arr, getYearsCB, getWinnersCB) {
-    const winner = getWinners(arr, getFinals);
-    const years = getYears(arr, getFinals);
-    return winner.map(function(item,index){
-        return `In ${years[index]}, ${item}won the world cup!`;
-    )}
+
+    
+function getWinnersByYear(fifaData, getYears, getWinners) {
+    let year = getYears(fifaData);
+    let winners = getWinners(fifaData);
+    let newArray=[];
+    for(let i=0;i< winners.length; i++){
+        newArray.push(`In ${year[i]}, ${winners[i]} won the world cup!` );
+    }
+    return newArray;
+}
+
+
     
 
-}
+
 
 
 
@@ -116,12 +124,10 @@ Use the higher order function getAverageGoals to do the following:
 */
 
 function getAverageGoals(getFinalsCB) {
-    const away = awayteamGoals.reduce((add, current) =>{
-        return add + current.HomeTeamGoals;
+    const sum = getFinalsCB.reduce((add, current) =>{
+        return add + current[ "Home Team Goals"] + current["Away Team Goals"];
     }, 0);
-    const home = hometeamGoals.reduce((add, current) =>{
-        return add + current.AwayTeamGoals;
-    }, 0);
+ return (sum / getFinalsCB.length).toFixed(2);   
    
 }
 
